@@ -37,7 +37,7 @@
                         label="Enter your password"
                         v-model="password"
                         min="5"
-                        :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                        :append-icon="e1 ? 'visibility_off' : 'visibility'"
                         :append-icon-cb="() => (e1 = !e1)"
                         :type="e1 ? 'password' : 'text'"
                         :rules="passwordRules"
@@ -78,7 +78,7 @@ export default {
       postBody: {},
       valid: false,
       checkbox: false,
-      e1: false,
+      e1: true,
       firstname: "",
       lastname: "",
       firstNameRules: [v => !!v || "First Name is Required"],

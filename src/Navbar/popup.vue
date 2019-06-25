@@ -63,7 +63,7 @@
               <v-date-picker v-model="dateTime" no-title scrollable>
                 <v-spacer></v-spacer>
                 <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-                <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                <v-btn flat color="primary" @click="$refs.menu.save(dateTime)">OK</v-btn>
               </v-date-picker>
             </v-menu>
             <v-layout justify-space-between>
@@ -134,6 +134,9 @@ export default {
           console.log(e);
           alert("Error!!");
         });
+    },
+    save(data){
+      this.dateTime=data;
     }
   }
 };
