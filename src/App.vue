@@ -1,28 +1,30 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <main>
+      <router-view></router-view>
+    </main>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
-
+import 'vuetify/dist/vuetify.min.css';
 export default {
-  name: 'app',
-  components: {
-    HelloWorld,
-  },
+  name: "app"
 };
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-image: url("https://images.unsplash.com/photo-1497733942558-e74c87ef89db?dpr=1&auto=compress,format&fit=crop&w=1650&h=&q=80&cs=tinysrgb&crop=");
+  background-size: cover;
+  overflow: hidden;
+}
+.loginOverlay {
+  background: rgba(33, 150, 243, 0.3);
+}
+.photoCredit {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
 }
 </style>
