@@ -1,41 +1,41 @@
 <script>
-import { Bar } from "vue-chartjs";
-import categories from "../Categories/categories";
+import { Bar } from 'vue-chartjs';
+import categories from '../Categories/categories';
 
 export default {
   extends: Bar,
   data() {
     return {
       chartData: {},
-      taskArray: [],
       catergories: [],
       options: {
         responsive: true,
-        maintainAspectRatio: false
-      }
+        maintainAspectRatio: false,
+      },
     };
   },
   watch: {
-    allTasks: function(newData, oldData) {
-      console.log("entering...");
-      this.taskArray = this.allTasks[0];
+    taskArray() {
+      console.log('entering...');
       console.log(this.taskArray);
+
+      //
       this.catergories = categories.categories;
-      var categoryCount = [];
-      this.catergories.forEach(category => {
+      const categoryCount = [];
+      this.catergories.forEach((category) => {
         const count = this.taskArray.filter(
-          task => task.taskDomain === category
+          task => task.taskDomain === category,
         ).length;
         categoryCount.push(count);
       });
 
-      var allocatedTimeArray = [];
-      var timeLoggedArray = [];
-      var asum = 0;
-      var tsum = 0;
-      this.catergories.forEach(category => {
-        this.taskArray.forEach(task => {
-          console.log(task.taskDomain + " " + category);
+      const allocatedTimeArray = [];
+      const timeLoggedArray = [];
+      let asum = 0;
+      let tsum = 0;
+      this.catergories.forEach((category) => {
+        this.taskArray.forEach((task) => {
+          console.log(`${task.taskDomain} ${category}`);
           if (task.taskDomain === category) {
             asum += task.allocatedTime;
             tsum += task.timeLogged;
@@ -50,26 +50,26 @@ export default {
         labels: this.catergories,
         datasets: [
           {
-            type: "bar",
-            label: "time logged",
+            type: 'bar',
+            label: 'time logged',
             // backgroundColor: "black",
-            data: timeLoggedArray
+            data: timeLoggedArray,
           },
           {
-            type: "line",
-            label: "allocated time",
+            type: 'line',
+            label: 'allocated time',
             //  backgroundColor: "#f87979",
-            data: allocatedTimeArray
-          }
-        ]
+            data: allocatedTimeArray,
+          },
+        ],
       };
       this.renderChart(this.chartData, this.options);
-    }
+    },
   },
   computed: {
-    allTasks() {
+    taskArray() {
       return this.$store.state.userTasks;
-    }
-  }
+    },
+  },
 };
 </script>

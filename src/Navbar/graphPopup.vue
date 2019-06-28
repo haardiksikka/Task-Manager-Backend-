@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import barChart from "../BarChart/chart.vue";
+import barChart from '../BarChart/chart.vue';
 
 export default {
-  name: "GraphPopup",
-  components: { barChart }
+  name: 'GraphPopup',
+  components: { barChart },
 };
 </script>
 

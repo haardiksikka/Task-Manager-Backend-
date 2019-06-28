@@ -46,7 +46,7 @@
                       ></v-text-field>
                       <v-checkbox
                         v-model="checkbox"
-                        :rules="[v => !!v || 'Robot waala check lagao be!']"
+                        :rules="[v => !!v || 'Robot waala check lagaya??!']"
                         label="I am not a Robot :D"
                         required
                       ></v-checkbox>
@@ -70,8 +70,9 @@
 </template>
 
 <script>
-import "vuetify/dist/vuetify.min.css";
-import axios from "axios";
+import 'vuetify/dist/vuetify.min.css';
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -79,19 +80,18 @@ export default {
       valid: false,
       checkbox: false,
       e1: true,
-      firstname: "",
-      lastname: "",
-      firstNameRules: [v => !!v || "First Name is Required"],
-      secondNameRules: [v => !!v || "Last Name is Requires"],
-      password: "",
-      passwordRules: [v => !!v || "Password is required"],
-      email: "",
+      firstname: '',
+      lastname: '',
+      firstNameRules: [v => !!v || 'First Name is Required'],
+      secondNameRules: [v => !!v || 'Last Name is Requires'],
+      password: '',
+      passwordRules: [v => !!v || 'Password is required'],
+      email: '',
       emailRules: [
-        v => !!v || "E-mail is required",
-        v =>
-          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be valid"
-      ]
+        v => !!v || 'E-mail is required',
+        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v)
+          || 'E-mail must be valid',
+      ],
     };
   },
   methods: {
@@ -102,25 +102,25 @@ export default {
           FirstName: this.firstname,
           LastName: this.lastname,
           Email: this.email,
-          Password: this.password
+          Password: this.password,
         });
         axios
-          .post(`https://localhost:44389/api/user/register`, this.postBody)
-          .then(response => {
+          .post('https://localhost:44389/api/user/register', this.postBody)
+          .then((response) => {
             console.log(response.data);
-            alert("Registered Successfully");
-            this.$router.push({ name: "Login" });
+            alert('Registered Successfully');
+            this.$router.push({ name: 'Login' });
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e);
-            alert("Error while creating user");
+            alert('Error while creating user');
           });
       }
     },
     clear() {
       this.$refs.form.reset();
-    }
-  }
+    },
+  },
 };
 </script>
 

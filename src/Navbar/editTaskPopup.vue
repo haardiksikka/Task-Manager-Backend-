@@ -1,12 +1,11 @@
 <template>
-  <v-dialog flat max-width="900px">
-    <v-btn class="white--text" style="padding:20px 10px;" slot="activator" flat>
-      Add Task
-      <v-icon right>add</v-icon>
-    </v-btn>
+  <v-dialog v-model="dialog" flat max-width="900px">
+      <p slot="activator">
+     <v-icon color="blue" style="cursor:pointer" @click="taskEditor()">edit</v-icon>
+    </p>
     <v-card>
       <v-card-title>
-        <h1>Add new Task</h1>
+        <h1>Edit Task</h1>
       </v-card-title>
       <v-card-text>
         <div>
@@ -18,7 +17,7 @@
               required
             ></v-text-field>
             <v-select
-              v-model="taskDomain"
+              v-model="taskDomain"             
               :items="items"
               :rules="[v => !!v || 'Task Domain  is required']"
               label="Task Domain"
@@ -27,6 +26,7 @@
             <v-text-field
               label="Enter Time Logged"
               type="number"
+              :class="{invalid: timeLogged<0 || timeLogged>999999999}"
               v-model="timeLogged"
               :rules="timeLoggedRules"
               required
@@ -35,6 +35,7 @@
               label="Enter Allocated Time"
               type="number"
               v-model="allocatedTime"
+              :class="{invalid: allocatedTime<0 || allocatedTime>999999999}"
               min="5"
               :rules="allocatedTimeRules"
               required
@@ -67,7 +68,7 @@
               </v-date-picker>
             </v-menu>
             <v-layout justify-space-between>
-              <v-btn @click="addTask" class="blue darken-4 white--text">Add Task</v-btn>
+              <v-btn @click="editTask" class="blue darken-4 white--text">Edit Task</v-btn>
             </v-layout>
           </v-form>
         </div>
@@ -77,70 +78,81 @@
 </template>
 
 <script>
-import axios from "axios";
-
+import axios from 'axios';
+import categories from '../Categories/categories'
 export default {
+ props : { task: {type:Object} }, 
+ computed: {
+     currentTask(){
+         return this.task;
+     }
+ },
   data() {
     return {
       landscape: true,
-     // date: new Date().toISOString().substr(0, 10),
+      dialog: false,
+      // date: new Date().toISOString().substr(0, 10),
       menu: false,
       modal: false,
       menu2: false,
-      items: [
-        "dotNet Framework",
-        "dotNet Core",
-        "vuejs",
-        "Angular",
-        "Java",
-        "Node js",
-        "React",
-        "Python Django",
-        "CSS"
-      ],
-      userStory: "",
-      taskDomain: "",
+      items:categories.categories,
+      userStory: '',
+      taskDomain: '',
       allocatedTime: 0,
       timeLogged: 0,
       dateTime: new Date().toISOString().substr(0, 10),
-      userStoryRules: [v => !!v || "User Story is Required"],
-      taskDomainRules: [v => !!v || " Task Domain is Requires"],
-      allocatedTimeRules: [v => !!v || "Allocated Time is Requires"],
-      timeLoggedRules: [v => !!v || "Time Logged is Required"],
-      postBody: {}
+      userStoryRules: [v => !!v || 'User Story is Required'],
+      taskDomainRules: [v => !!v || ' Task Domain is Requires'],
+      allocatedTimeRules: [v => !!v || 'Allocated Time is Requires',
+                           v => /^[0-9]/.test(v) || 'Enter integer greater than 0',
+                           v => v<123456789 ||'Maximum value for integer exceeded!!' ],
+      timeLoggedRules: [v => !!v || 'Time Logged is Required',
+                        v => /^[0-9]/.test(v) || 'Enter integer greater than 0',
+                        v => v<123456789 ||'Maximum value for integer exceeded!!'],
+      postBody: {},
     };
   },
 
   methods: {
-    addTask() {
-      console.log("adding task");
-      var token = sessionStorage.getItem("user");
+    taskEditor() {
+     this.userStory=this.currentTask.userStory;
+     this.allocatedTime= this.currentTask.allocatedTime;
+     this.taskDomain= this.currentTask.taskDomain;
+     this.timeLogged=this.currentTask.timeLogged;
+    this.dateTime=this.currentTask.dateTime
+
+  },
+  editTask(){
+      const token = sessionStorage.getItem('user');
       this.postBody = Object.assign({
         UserStory: this.userStory,
         TaskDomain: this.taskDomain,
         AllocatedTime: this.allocatedTime,
         TimeLogged: this.timeLogged,
-        Email: token,
+        taskId: this.currentTask.taskId,
+        Email:token,
         DateTime: this.dateTime,
       });
 
       axios
-        .post(`https://localhost:44389/api/task/newtask`, this.postBody)
-        .then(response => {
+        .post(`https://localhost:44389/api/task/edittask`, this.postBody)
+        .then((response) => {
           console.log(response.data);
-          window.location.reload();
+         this.$store.dispatch('getTaskData');
+         this.$refs.form.reset();
+         this.dialog = false;
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
-          alert("Error!!");
+          alert('Error!!');
         });
     },
-    save(data){
-      this.dateTime=data;
-    }
-  }
+  },
 };
 </script>
 
 <style>
+.invalid {
+  color: red;
+}
 </style>

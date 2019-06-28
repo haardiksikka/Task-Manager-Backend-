@@ -48,53 +48,54 @@
 
 
 <script>
-import 'vuetify/dist/vuetify.min.css'
+import 'vuetify/dist/vuetify.min.css';
 import axios from 'axios';
+
 export default {
-    
-     data () {
-          return {
-            postBody:{},  
-            valid: false,
-            e1: true,
-            password: '',
-            passwordRules: [
-              (v) => !!v || 'Password is required',
-            ],
-            email: '',
-            emailRules: [
-              (v) => !!v || 'E-mail is required',
-              (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-            ],
-          }
-        },
-        methods: {
-          submit () {
-            if (this.$refs.form.validate()) {
-                this.postBody= Object.assign({Email: this.email,Password:this.password});
-                axios.post(`https://localhost:44389/api/user/authenticate`,this.postBody, {
-                body: this.postBody
-                
-                })
-                .then(response => {
-                  console.log(response.data);
-                  var userData= response.data;
-                  sessionStorage.setItem('user',userData.email);
-                  
-                  this.$router.push({ name: 'Home' }) 
-                })
-                .catch(e => {
-                 console.log(e);
-                 alert('Username/Password is wrong, Try Again!');
-                 this.clear();
-                })
-            }
-          },
-          clear () {
-            this.$refs.form.reset()
-          }
-        },
-}
+
+  data() {
+    return {
+      postBody: {},
+      valid: false,
+      e1: true,
+      password: '',
+      passwordRules: [
+        v => !!v || 'Password is required',
+      ],
+      email: '',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
+      ],
+    };
+  },
+  methods: {
+    submit() {
+      if (this.$refs.form.validate()) {
+        this.postBody = Object.assign({ Email: this.email, Password: this.password });
+        axios.post('https://localhost:44389/api/user/authenticate', this.postBody, {
+          body: this.postBody,
+
+        })
+          .then((response) => {
+            console.log(response.data);
+            const userData = response.data;
+            sessionStorage.setItem('user', userData.email);
+
+            this.$router.push({ name: 'Home' });
+          })
+          .catch((e) => {
+            console.log(e);
+            alert('Username/Password is wrong, Try Again!');
+            this.clear();
+          });
+      }
+    },
+    clear() {
+      this.$refs.form.reset();
+    },
+  },
+};
 </script>
 
 <style>
