@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       chartData: {},
-      catergories: [],
+      categories: [],
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -18,27 +18,27 @@ export default {
     taskArray() {
       console.log('entering...');
       console.log(this.taskArray);
-
-      //
-      this.catergories = categories.categories;
+      this.getCategories.forEach((c)=>{
+        this.categories.push(c.CategoryName)
+      })
+    
+      console.log(this.categories);
       const categoryCount = [];
-      this.catergories.forEach((category) => {
+      this.categories.forEach((category) => {
         const count = this.taskArray.filter(
           task => task.taskDomain === category,
         ).length;
         categoryCount.push(count);
       });
-
       const allocatedTimeArray = [];
       const timeLoggedArray = [];
       let asum = 0;
       let tsum = 0;
-      this.catergories.forEach((category) => {
+      this.categories.forEach((category) => {
         this.taskArray.forEach((task) => {
-          console.log(`${task.taskDomain} ${category}`);
-          if (task.taskDomain === category) {
-            asum += task.allocatedTime;
-            tsum += task.timeLogged;
+          if (task.TaskDomain === category) {
+            asum += task.AllocatedTime;
+            tsum += task.TimeLogged;
           }
         });
         allocatedTimeArray.push(asum);
@@ -47,7 +47,7 @@ export default {
         tsum = 0;
       });
       this.chartData = {
-        labels: this.catergories,
+        labels: this.categories,
         datasets: [
           {
             type: 'bar',
@@ -68,7 +68,10 @@ export default {
   },
   computed: {
     taskArray() {
-      return this.$store.state.userTasks;
+      return this.$store.getters.userTasks;
+    },
+    getCategories(){
+      return this.$store.getters.taskCategories;
     },
   },
 };

@@ -18,9 +18,10 @@
               required
             ></v-text-field>
             <v-select
-              v-model="taskDomain"
-              
+              v-model="taskDomain"              
               :items="items"
+              item-text="CategoryName"
+              item-value="CategoryId"
               :rules="[v => !!v || 'Task Domain  is required']"
               label="Task Domain"
               required
@@ -81,7 +82,7 @@
 
 <script>
 import axios from 'axios';
-import categories from '../Categories/categories'
+//import categories from '../Categories/categories'
 
 export default {
   data() {
@@ -103,7 +104,7 @@ export default {
       //   'Python Django',
       //   'CSS',
       // ],
-      items: categories.categories,
+      
       userStory: '',
       taskDomain: '',
       allocatedTime: 0,
@@ -120,22 +121,45 @@ export default {
       postBody: {},
     };
   },
-
+  computed: {
+    items() {
+      console.log('enetring computed');
+      return this.$store.getters.taskCategories;
+    },
+  },
+  created() {
+     this.$store.dispatch('getCategories');
+  },
+  watch: {
+    taskDomain: {
+      handler (newValue, oldValue) {
+        console.log(newValue, oldValue);
+      }
+    },
+    '$store.state.categories': {
+      handler (newValue, oldValue) {
+        console.log(newValue, oldValue);
+      }
+    }
+  },
   methods: {
     addTask() {
-      console.log('adding task');
+     // console.log(this.taskDomain);
       const token = sessionStorage.getItem('user');
       this.postBody = Object.assign({
+        NewTask:{
         UserStory: this.userStory,
-        TaskDomain: this.taskDomain,
+        TaskDomain: "",
         AllocatedTime: this.allocatedTime,
         TimeLogged: this.timeLogged,
         Email: token,
-        DateTime: this.dateTime,
+        CategoryId:this.taskDomain,
+        CreatedOn: this.dateTime,
+        }
       });
 
       axios
-        .post('https://localhost:44389/api/task/newtask', this.postBody)
+        .post('http://localhost:53653/json/reply/AddUserTask', this.postBody)
         .then((response) => {
           console.log(response.data);
          this.$store.dispatch('getTaskData');

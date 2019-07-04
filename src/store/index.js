@@ -1,30 +1,45 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-shadow */
 import axios from 'axios';
 
-Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
-    userTasks: [],
+const state = {
+  userTasks: [],
+};
+const mutations = {
+  addToTask: (state, tasks) => {
+    state.userTasks = [];
+    tasks.forEach((task) => {
+      task.TaskDomain = task.TaskCategory.CategoryName;
+      state.userTasks.push(task);
+    });
   },
-  mutations: {
-    addToTask(state, tasks) {
-      state.userTasks = [];
-      console.log(tasks);
-      tasks.forEach(task => state.userTasks.push(task));
-    },
-  },
-  actions: {
-    getTaskData({ commit }) {
-      const token = sessionStorage.getItem('user');
-      axios.get(`https://localhost:44389/api/task/usertask?email=${token}`)
+};
+const actions = {
+  getTaskData({ commit }) {
+    const token = sessionStorage.getItem('user');
+    if (token !== 'undefined') {
+      axios.get(`http://localhost:53653/usertask/${token}`)
         .then((result) => {
-          commit('addToTask', result.data);
+          const r = result.data[0].Tasks;
+          commit('addToTask', r);
         })
         .catch((e) => {
           console.log(e);
         });
-    },
+    } else {
+      console.log('errr from getTaskData');
+    }
   },
-});
+};
+const getters = {
+  userTasks: (state) => {
+    return state.userTasks;
+  },
+};
+export default {
+  state,
+  mutations,
+  actions,
+  getters,
+};

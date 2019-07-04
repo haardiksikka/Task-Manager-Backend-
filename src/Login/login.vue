@@ -73,16 +73,18 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         this.postBody = Object.assign({ Email: this.email, Password: this.password });
-        axios.post('https://localhost:44389/api/user/authenticate', this.postBody, {
-          body: this.postBody,
-
-        })
+        axios.post('http://localhost:53653/json/reply/AuthenticateUser', this.postBody)
           .then((response) => {
-            console.log(response.data);
+            if(response.data != null){
             const userData = response.data;
-            sessionStorage.setItem('user', userData.email);
-
+            sessionStorage.setItem('user', userData.Email);
+           // this.$store.dispatch('getTaskData');
+           // this.$store.dispatch('getCategories');
             this.$router.push({ name: 'Home' });
+            }
+            else{
+              alert("Username/Pasword Wrong")
+            }
           })
           .catch((e) => {
             console.log(e);

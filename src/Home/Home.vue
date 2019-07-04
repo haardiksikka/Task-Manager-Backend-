@@ -4,13 +4,13 @@
     <v-container>
       <v-data-table :headers="headers" :items="tasks" class="elevation-1 pt-5">
         <template v-slot:items="props" >
-        <td>{{props.item.taskId}}</td>
-        <td>{{props.item.userStory}}</td>
-         <td>{{props.item.taskDomain}}</td>
-         <td> {{props.item.dateTime.substring(0,10)}} </td>
-        <td>{{props.item.timeLogged}}</td>
-        <td>{{props.item.allocatedTime}}</td>
-        <td> <v-icon color="red" style="cursor:pointer" @click="removeTask(props.item.taskId)">delete</v-icon> </td>
+        <td>{{props.item.TaskId}}</td>
+        <td>{{props.item.UserStory}}</td>
+         <td>{{props.item.TaskDomain}}</td>
+         <td> {{new Date(props.item.CreatedOn.match(/\d+/)[0]*1).toString().substring(0,10)}} </td>
+        <td>{{props.item.TimeLogged}}</td>
+        <td>{{props.item.AllocatedTime}}</td>
+        <td> <v-icon color="red" style="cursor:pointer" @click="removeTask(props.item.TaskId)">delete</v-icon> </td>
         <td><EditPopup :task="props.item"></EditPopup></td>      
         </template>
       </v-data-table>
@@ -22,7 +22,7 @@
 import 'vuetify/dist/vuetify.min.css';
 import axios from 'axios';
 import Navbar from '../Navbar/navbar.vue';
-import EditPopup from '../Navbar/editTaskPopup.vue'
+import EditPopup from '../Navbar/editTaskPopup.vue';
 
 export default {
   name: 'Home',
@@ -31,17 +31,15 @@ export default {
     EditPopup
   },
   computed: {
-    tasks() {
-      return this.$store.state.userTasks;
+    tasks() {    
+      return this.$store.getters.userTasks;
     },
   },
-  created() {
-    console.log('created hook executed')
-    this.$store.dispatch('getTaskData');
+  mounted() {
+      this.$store.dispatch('getTaskData');
   },
   data() {
     return {
-
       headers: [
         {
           text: 'Task Id',
@@ -64,11 +62,11 @@ export default {
   },
   methods: {
     removeTask(id) {
-      axios.delete(`https://localhost:44389/api/task/deletetask?id=${id}`)
+      axios.get(`http://localhost:53653/deletetask/${id}`)
         .then((response) => {
           if (response.data === true) {
-           // window.location.reload();
            this.$store.dispatch('getTaskData');
+           //this.$store.dispatch('getCategories');
           } else {
             alert('error while deletion');
           }

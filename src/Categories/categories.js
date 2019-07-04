@@ -1,13 +1,13 @@
-const categories = [
-  'dotNet Core',
-  'dotNet Framework',
-  'vuejs',
-  'Java',
-  'Python Django',
-  'Angular',
-  'React',
-];
+// import axios from 'axios';
 
-export default {
-  categories,
-};
+// let categories = [];
+// axios.get('http://localhost:53653/getcategories')
+//   .then((response) => {
+//     console.log
+//     categories = response.data;
+//   })
+//   .catch(e => console.log(e));
+
+// export default {
+//   categories,
+// };

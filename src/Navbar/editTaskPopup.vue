@@ -19,6 +19,8 @@
             <v-select
               v-model="taskDomain"             
               :items="items"
+              item-text = "CategoryName"
+              item-value = "CategoryId"
               :rules="[v => !!v || 'Task Domain  is required']"
               label="Task Domain"
               required
@@ -35,7 +37,7 @@
               label="Enter Allocated Time"
               type="number"
               v-model="allocatedTime"
-              :class="{invalid: allocatedTime<0 || allocatedTime>999999999}"
+              :class="{invalid: allocatedTime<0 || allocatedTime>123456778}"
               min="5"
               :rules="allocatedTimeRules"
               required
@@ -79,13 +81,17 @@
 
 <script>
 import axios from 'axios';
-import categories from '../Categories/categories'
+//import categories from '../Categories/categories'
 export default {
  props : { task: {type:Object} }, 
  computed: {
      currentTask(){
          return this.task;
-     }
+     },
+    items() {
+      //console.log('enetring computed');
+      return this.$store.getters.taskCategories;
+    },
  },
   data() {
     return {
@@ -95,7 +101,6 @@ export default {
       menu: false,
       modal: false,
       menu2: false,
-      items:categories.categories,
       userStory: '',
       taskDomain: '',
       allocatedTime: 0,
@@ -103,7 +108,7 @@ export default {
       dateTime: new Date().toISOString().substr(0, 10),
       userStoryRules: [v => !!v || 'User Story is Required'],
       taskDomainRules: [v => !!v || ' Task Domain is Requires'],
-      allocatedTimeRules: [v => !!v || 'Allocated Time is Requires',
+      allocatedTimeRules: [v => !!v || 'Allocated Time is Required',
                            v => /^[0-9]/.test(v) || 'Enter integer greater than 0',
                            v => v<123456789 ||'Maximum value for integer exceeded!!' ],
       timeLoggedRules: [v => !!v || 'Time Logged is Required',
@@ -115,27 +120,28 @@ export default {
 
   methods: {
     taskEditor() {
-     this.userStory=this.currentTask.userStory;
-     this.allocatedTime= this.currentTask.allocatedTime;
-     this.taskDomain= this.currentTask.taskDomain;
-     this.timeLogged=this.currentTask.timeLogged;
-    this.dateTime=this.currentTask.dateTime
-
+     this.userStory=this.currentTask.UserStory;
+     this.allocatedTime= this.currentTask.AllocatedTime;
+     this.taskDomain= this.currentTask.TaskDomain;
+     this.timeLogged=this.currentTask.TimeLogged;
   },
   editTask(){
       const token = sessionStorage.getItem('user');
       this.postBody = Object.assign({
+        NewTaskData:{
         UserStory: this.userStory,
         TaskDomain: this.taskDomain,
         AllocatedTime: this.allocatedTime,
         TimeLogged: this.timeLogged,
-        taskId: this.currentTask.taskId,
+        taskId: this.currentTask.TaskId,
         Email:token,
-        DateTime: this.dateTime,
+        CreatedOn: this.dateTime,
+        CategoryId: this.taskDomain,
+        }
       });
 
       axios
-        .post(`https://localhost:44389/api/task/edittask`, this.postBody)
+        .post(`http://localhost:53653/json/reply/EditUserTask`, this.postBody)
         .then((response) => {
           console.log(response.data);
          this.$store.dispatch('getTaskData');

@@ -99,13 +99,16 @@ export default {
       if (this.$refs.form.validate()) {
         // console.log(this.email+' '+this.password);
         this.postBody = Object.assign({
-          FirstName: this.firstname,
+         NewUser:{ 
+           FirstName: this.firstname,
           LastName: this.lastname,
           Email: this.email,
           Password: this.password,
+         }
         });
+        console.log(this.postBody);
         axios
-          .post('https://localhost:44389/api/user/register', this.postBody)
+          .post('http://localhost:53653/json/reply/AddUser', this.postBody)
           .then((response) => {
             console.log(response.data);
             alert('Registered Successfully');
